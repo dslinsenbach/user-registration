@@ -1,0 +1,99 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+    <div class="text-center mt-5">
+        <h1>Users</h1>
+    </div>
+
+    <table id="users" class="table table-striped" style="width: 100%">
+        <thead>
+            <tr>
+                <th>Email Address</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Created</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+<div class="modal fade" id="userDetails" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="userName" class="modal-title"></h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-2">
+                    <div class="col-4">Email Address</div>
+                    <div class="col-8"><span id="userEmailAddress"></span></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4">Phone Number</div>
+                    <div class="col-8"><span id="userPhoneNumber"></span></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4">Created</div>
+                    <div class="col-8"><span id="userCreated"></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+<%- include('../partials/scripts') %>
+
+<script>
+    function showUserDetails(user) {
+        $('#userDetails #userName').text(user.firstname + " " + user.lastname);
+        $('#userDetails #userEmailAddress').html(`<a href="mailto:${user.email}">${user.email}</a>`);
+        $('#userDetails #userPhoneNumber').html(`<a href="tel:${user.phone}">${user.phone}</a>`);
+        $('#userDetails #userCreated').text(formatDate(user.created, 'long', 'short'));
+
+        $('#userDetails').modal('show');
+    }
+
+    function getUserDetails(id) {
+        $.getJSON(API_URL_ADMIN_USER_DETAILS + id, (resp) => {
+            if (resp.success && resp.data) {
+                showUserDetails(resp.data);
+            } else {
+                alert('Sorry, that user\'s details could not be loaded.');
+            }
+        });
+    }
+
+    $(function() {
+        $('#users').DataTable({
+            ajax: API_URL_ADMIN_USERS,
+            columns: [
+                { data: "email" },
+                { data: "firstname" },
+                { data: "lastname" },
+                { 
+                    data: "created", 
+                    render: function(data) {
+                        return formatDate(data, 'medium', 'short');
+                    }
+                }
+            ],
+            columnDefs: [
+                {
+                    targets: 0,
+                    render: function(data, type, row) {
+                        return '<a href="#" data-id="' + row.id + '">' + row.email + '</a>'
+                    }
+                }
+            ],
+            order: [ [3, "desc" ] ],
+            drawCallback: function (settings) {
+                $('#users a').on('click', function(e) {
+                    getUserDetails($(this).data('id'));
+                });
+            }
+        });
+    });
+</script>
+
+<%- include('../partials/footer') %>
