@@ -1,3 +1,21 @@
 .bg-dark {
     background-color: #12295d !important;
 }
+
+#result {
+    border: dashed 2px rgba(0,0,0,0.15);
+    display: none;
+    margin: 15px auto;
+    max-width: 600px;
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+}
+
+#result.success {
+    background-color: #7bff7b;
+}
+
+#result.fail {
+    background-color: #ff7b7b;
+}

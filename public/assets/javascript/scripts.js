@@ -79,19 +79,7 @@ function formatDate(raw, dateStyle, timeStyle) {
   return d.toLocaleString('en-US', options);
 }
 
-function clearErrors() {
-  $('form .error').text('');
-  $('form .error').hide();
-}
-
-function showError(form, message) {
-  form.find('.error').text(message);
-  form.find('.error').show();
-}
-
 function submitForm(form, method, url, cb) {
-  clearErrors();
-
   const data = JSON.stringify(form.serializeObject());
 
   const options = {
@@ -105,7 +93,7 @@ function submitForm(form, method, url, cb) {
     .done((resp) => {
       cb(resp);
     })
-    .fail((error) => {
-      showError(form, error.responseJSON ? error.responseJSON.message : 'An unknown error occurred.');
+    .fail((resp) => {
+      cb(resp.responseJSON);
     });
 }

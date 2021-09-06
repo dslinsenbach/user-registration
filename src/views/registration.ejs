@@ -6,6 +6,8 @@
         <p class="lead">Please fill out the following form to sign up today!</p>
     </div>
 
+    <div id="result"></div>
+
     <form id="frmRegister">
         <div class="mb-3">
             <label for="email" class="form-label">Email Address</label>
@@ -44,8 +46,25 @@
         $('form').on('submit', function(e) {
             e.preventDefault();
 
-            submitForm($(this), 'POST', API_URL_REGISTER, (resp) => {
+            $('#result').hide();
+            $('#result').removeClass();
 
+            submitForm($(this), 'POST', API_URL_REGISTER, (resp) => {
+                let resultText, resultClass;
+
+                if (resp.success) {
+                    resultText = `${resp.data.firstname} ${resp.data.lastname} has been created successfully!`;
+                    resultClass = 'success';
+                } else {
+                    resultText = 'That user could not be created.<br />' + resp.message;
+                    resultClass = 'fail';
+                }
+
+                if (resultText) {
+                    $('#result').html(resultText);
+                    $('#result').addClass(resultClass);
+                    $('#result').show();
+                }
             });
         });
     });
