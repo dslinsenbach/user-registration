@@ -23,9 +23,11 @@ app.use(express.static(path.join(__dirname, '../public')));
 const adminRoutes = require('./api/v1/routes/admin.routes');
 const registrationRoutes = require('./api/v1/routes/registration.routes');
 const viewRoutes = require('./api/v1/routes/views.routes');
+const healthRoutes = require('./api/v1/routes/health.routes');
 
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/register', registrationRoutes);
+app.use('/api/v1/health', healthRoutes);
 app.use('/', viewRoutes);
 
 // Start listening with Express
